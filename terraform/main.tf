@@ -1,14 +1,5 @@
 resource "docker_image" "app" {
-
   name = var.image_name
-
-  build {
-    context = ".."
-    dockerfile = "Dockerfile"
-  }
-
-  keep_locally = true
-
 }
 
 resource "docker_container" "app" {
