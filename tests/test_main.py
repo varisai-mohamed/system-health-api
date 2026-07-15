@@ -141,8 +141,8 @@ def test_check_health_success(
     )
 
     assert(
-        response_json["graph_file"]
-        == "generated_graphs\dag_test.png"
+        Path(response_json["graph_file"])
+        == Path("generated_graphs/dag_test.png")
     )
 
 
