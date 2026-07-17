@@ -11,7 +11,7 @@ on:
 
 jobs:
     test-build-healthcheck:
-      
+
         runs-on: ubuntu-latest
 
         steps:
@@ -44,7 +44,7 @@ jobs:
               run: |
                 docker run -d \ 
                   -p 8000:8000 \
-                  --name system-health-api-test \                    
+                  --name system-health-api-container \                    
                   system-health-api:latest
 
             - name: Wait For Application Startup
@@ -59,13 +59,13 @@ jobs:
             - name: Show Container Logs On Failure
               if: failure() 
               run: |
-                docker logs system-health-api-test
+                docker logs system-health-api-container
               
             - name: Cleanup Container
               if: always()
               run: |
-                docker stop system-health-api-test || true
-                docker rm system-health-api-test || true
+                docker stop system-health-api-container || true
+                docker rm system-health-api-container || true
 
              
 
