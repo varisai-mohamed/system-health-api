@@ -42,10 +42,7 @@ jobs:
             
             - name: Run Docker Container
               run: |
-                docker run -d \ 
-                  -p 8000:8000 \
-                  --name system-health-api-container \                    
-                  system-health-api:latest
+                docker run -d -p 8000:8000 --name system-health-api-container system-health-api:latest
 
             - name: Wait For Application Startup
               run: |
@@ -53,8 +50,7 @@ jobs:
 
             - name: Verify Health Endpoint
               run: |
-                curl --fail --silent --show-error \ 
-                http://localhost:8000/health
+                curl --fail --silent --show-error http://localhost:8000/health
 
             - name: Show Container Logs On Failure
               if: failure() 
