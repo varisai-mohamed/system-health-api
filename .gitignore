@@ -1,6 +1,8 @@
 __pycache__/
 .pytest_cache/
 
+.vscode/
+
 htmlcov/
 coverage.xml
 .coverage
@@ -17,3 +19,6 @@ terraform.tfstate.backup
 *.pyc
 *.pyo
 *.pyd
+
+.DS_Store
+Thumbs.db

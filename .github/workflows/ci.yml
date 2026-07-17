@@ -9,6 +9,10 @@ on:
         branches:
             - main
 
+permissions:
+      contents: read
+      packages: write
+
 jobs:
     test-build-healthcheck:
 
@@ -62,6 +66,22 @@ jobs:
               run: |
                 docker stop system-health-api-container || true
                 docker rm system-health-api-container || true
+
+            - name: Login to GitHub Container Registry
+              if: github.ref == 'refs/heads/main'
+              run: |
+                echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+            - name: Tag Docker Image
+              if: github.ref == 'refs/heads/main'
+              run: |
+                docker tag system-health-api:latest ghcr.io/${{ github.repository_owner }}/system-health-api:latest
+
+            - name: Push Docker Image to GHCR
+              if: github.ref == 'refs/heads/main'
+              run: |
+                docker push ghcr.io/${{ github.repository_owner }}/system-health-api:latest
+              
 
              
 
