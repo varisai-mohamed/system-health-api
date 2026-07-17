@@ -4,16 +4,14 @@ on:
     push:
         branches:
             - main
-            - master
 
     pull_request:
         branches:
             - main
-            - master
 
 jobs:
-    test-and-build:
-
+    test-build-healthcheck:
+      
         runs-on: ubuntu-latest
 
         steps:
@@ -32,15 +30,43 @@ jobs:
 
             - name: Install Dependencies
               run: |
-               poetry config virtualenvs.create false
                poetry install --no-interaction --no-ansi --no-root
 
             - name: Run Unit Tests
               run: |
-               pytest
+               poetry run pytest -v
 
             - name: Build Docker Image
               run: |
-                docker build -t system-health-api .
+                docker build -t system-health-api:latest .
+            
+            - name: Run Docker Container
+              run: |
+                docker run -d \ 
+                  -p 8000:8000 \
+                  --name system-health-api-test \                    
+                  system-health-api:latest
+
+            - name: Wait For Application Startup
+              run: |
+                sleep 15
+
+            - name: Verify Health Endpoint
+              run: |
+                curl --fail --silent --show-error \ 
+                http://localhost:8000/health
+
+            - name: Show Container Logs On Failure
+              if: failure() 
+              run: |
+                docker logs system-health-api-test
+              
+            - name: Cleanup Container
+              if: always()
+              run: |
+                docker stop system-health-api-test || true
+                docker rm system-health-api-test || true
+
+             
 
             
